@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class FlywheelIOSim extends SubsystemBase {
   /** Creates a new FlywheelIOSim. */
-  public FlywheelIOSim() {}
+  public FlywheelIOSim() {
+  }
 
   @Override
   public void periodic() {

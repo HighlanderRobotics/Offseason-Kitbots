@@ -6,6 +6,7 @@ package frc.robot.subsystems.flywheel;
 
 
 import java.io.ObjectInputFilter.Status;
+import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -83,7 +84,7 @@ public class FlywheelIO {
     inputs.tempCelcius = temp.getValue().in(Celsius);
   }
 
-  public void setVoltage(double voltage) {
+  public void setVoltage(Double voltage) {
     leader.setControl(voltageOut.withOutput(voltage));
   }
 
