@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.flywheel;
+package frc.robot.subsystems.flywheel;
 
 import java.io.ObjectInputFilter.Status;
 
@@ -15,6 +15,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.measure.*; // im lazy
+import frc.robot.flywheel.FlywheelSubsystem;
 
 
 /* 
@@ -55,7 +56,7 @@ public class FlywheelIO {
 
   public FlywheelIO(CANBus canBus) {
     leader = new TalonFX(0, canBus);
-    leader.getConfigurator().apply(DrumSubsystem.getFlywheelConfig); // no drum subsystem
+    leader.getConfigurator().apply(FlywheelSubsystem.getFlywheelConfig());
     velocity = leader.getVelocity();
     voltage = leader.getMotorVoltage();
     statorCurrent = leader.getStatorCurrent();
@@ -65,5 +66,9 @@ public class FlywheelIO {
 
     BaseStatusSignal.setUpdateFrequencyForAll(50.0, velocity, voltage, statorCurrent, supplyCurrent, temp, flywheelPosition);
     leader.optimizeBusUtilization();
+  }
+
+  public void updateInputs(FlywheelIOInputs inputs) {
+    BaseStatusSignal.refreshAll(velocity, voltage, statorCurrent,)
   }
 }
