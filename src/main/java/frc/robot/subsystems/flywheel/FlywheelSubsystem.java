@@ -51,6 +51,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     config.CurrentLimits.SupplyCurrentLimit = 30.0;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
+    // todo: get actual values sometime
     config.Slot0.kA = 0.0;
     config.Slot0.kD = 0.0;
     config.Slot0.kI = 0.0;

@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems.flywheel;
 
-
-import java.io.ObjectInputFilter.Status;
-import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.AutoLog;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -41,8 +37,8 @@ public class FlywheelIO {
     public double voltage = 0.0;
     public double statorCurrentAmps = 0.0;
     public double supplyCurrentAmps = 0.0;
-    public double tempCelcius = 0.0;
-    public double flywheelPositonRotations = 0.0;
+    public double tempCelsius = 0.0;
+    public double flywheelPositionRotations = 0.0;
   }
 
   protected final TalonFX leader;
@@ -60,7 +56,7 @@ public class FlywheelIO {
   private double velocitySetpointRotPerSecond = Double.NaN; // used for logging
 
   public FlywheelIO(CANBus canBus) {
-    leader = new TalonFX(0, canBus);
+    leader = new TalonFX(0, canBus); // todo: get actual device id
     leader.getConfigurator().apply(FlywheelSubsystem.getFlywheelConfig());
     velocity = leader.getVelocity();
     voltage = leader.getMotorVoltage();
@@ -74,17 +70,17 @@ public class FlywheelIO {
   }
 
   public void updateInputs(FlywheelIOInputs inputs) {
-    BaseStatusSignal.refreshAll(velocity, voltage, statorCurrent, temp, flywheelPosition);
+    BaseStatusSignal.refreshAll(velocity, voltage, statorCurrent, supplyCurrent, temp, flywheelPosition);
     inputs.connected = BaseStatusSignal.isAllGood(velocity, voltage, statorCurrent, supplyCurrent, temp, flywheelPosition);
-    inputs.flywheelPositonRotations = flywheelPosition.getValue().in(Rotation);
+    inputs.flywheelPositionRotations = flywheelPosition.getValue().in(Rotation);
     inputs.velocityRotPerSec = velocity.getValue().in(Rotation.per(Second));
     inputs.voltage = voltage.getValueAsDouble();
     inputs.statorCurrentAmps = statorCurrent.getValueAsDouble();
     inputs.supplyCurrentAmps = supplyCurrent.getValueAsDouble();
-    inputs.tempCelcius = temp.getValue().in(Celsius);
+    inputs.tempCelsius = temp.getValue().in(Celsius);
   }
 
-  public void setVoltage(Double voltage) {
+  public void setVoltage(double voltage) {
     leader.setControl(voltageOut.withOutput(voltage));
   }
 
