@@ -201,22 +201,18 @@ public class AlphaSwerveConstants extends SwerveConstants {
   public ModuleConstants getBackRightModuleConstants() {
     return new ModuleConstants(3, "Back Right", 6, 7, 3, Rotation2d.fromRotations(-0.205));
   }
-
   @Override
   public MotorType getTurnMotorType() {
     return MotorType.KrakenX60;
   }
-
   @Override
   public MotorType getDriveMotorType() {
     return MotorType.KrakenX60;
   }
-
   @Override
   public int getGyroID() {
     return 0;
   }
-
   @Override
   public Pigeon2Configuration getGyroConfig() {
     Pigeon2Configuration config = new Pigeon2Configuration();
