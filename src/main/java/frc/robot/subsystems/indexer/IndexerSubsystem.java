@@ -4,10 +4,21 @@
 
 package frc.robot.subsystems.indexer;
 
+import com.ctre.phoenix6.controls.VoltageOut;
+
+import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.indexer.IndexerIO.IndexerIOInputs;
 
 public class IndexerSubsystem extends SubsystemBase {
   /** Creates a new IndexerSubsystem. */
+  IndexerIO io;
+  IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+
+  VoltageOut leftVoltage = new VoltageOut(0);
+  VoltageOut rightVoltage = new VoltageOut(0);
+
+
   public IndexerSubsystem() {}
 
   @Override

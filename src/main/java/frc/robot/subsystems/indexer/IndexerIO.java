@@ -23,101 +23,62 @@ public class IndexerIO {
 
 
   public IndexerIO(CANBus canbus) {
-      leftIndexerMotor = new TalonFX(11,canbus);
+      indexerMotor = new TalonFX(11,canbus);
        // TODO: add a config variable for the motor ids in IndexerSubsystem instead of hardcoding it
-      indexerLeftVelocityRotsPerSec = leftIndexerMotor.getVelocity();
-      indexerLeftPositionRots = leftIndexerMotor.getPosition();
-      indexerLeftStatorCurrent = leftIndexerMotor.getStatorCurrent();
-      indexerLeftSupplyCurrent = leftIndexerMotor.getSupplyCurrent();
-      indexerLeftVoltage = leftIndexerMotor.getMotorVoltage();
-      indexerLeftTemp = leftIndexerMotor.getDeviceTemp();
-
-      rightIndexerMotor = new TalonFX(12,canbus);
-      indexerRightVelocityRotsPerSec = rightIndexerMotor.getVelocity();
-      indexerRightPositionRots = rightIndexerMotor.getPosition();
-      indexerRightStatorCurrent = rightIndexerMotor.getStatorCurrent();
-      indexerRightSupplyCurrent = rightIndexerMotor.getSupplyCurrent();
-      indexerRightVoltage = rightIndexerMotor.getMotorVoltage();
-      indexerRightTemp = rightIndexerMotor.getDeviceTemp();
+      indexerVelocityRotsPerSec = indexerMotor.getVelocity();
+      indexerPositionRots = indexerMotor.getPosition();
+      indexerStatorCurrent = indexerMotor.getStatorCurrent();
+      indexerSupplyCurrent = indexerMotor.getSupplyCurrent();
+      indexerVoltage = indexerMotor.getMotorVoltage();
+      indexerTemp = indexerMotor.getDeviceTemp();
 
       BaseStatusSignal.setUpdateFrequencyForAll(50.0,
-         indexerLeftVelocityRotsPerSec,indexerLeftPositionRots,indexerLeftStatorCurrent,indexerLeftSupplyCurrent,indexerLeftVoltage,indexerLeftTemp,
-         indexerRightVelocityRotsPerSec,indexerRightPositionRots,indexerRightStatorCurrent,
-         indexerRightSupplyCurrent,indexerRightVoltage,indexerRightTemp
+         indexerVelocityRotsPerSec,indexerPositionRots,indexerStatorCurrent,indexerSupplyCurrent,indexerVoltage
       );
-      leftIndexerMotor.optimizeBusUtilization();
-      rightIndexerMotor.optimizeBusUtilization();
+      indexerMotor.optimizeBusUtilization();
       
   }
-  @AutoLog
+  @AutoLog 
   public static class IndexerIOInputs {
-    public double indexerLeftVelocityRotationsPerSec = 0.0;
-    public double indexerLeftPositionRots = 0.0;
-    public double indexerLeftStatorCurrentAmp = 0.0;
-    public double indexerLeftSupplyCurrentAmp = 0.0;
-    public double indexerLeftVoltage = 0.0;
-    public double indexerLeftTempC = 0.0;
+    public double indexerVelocityRotationsPerSec = 0.0;
+    public double indexerPositionRots = 0.0;
+    public double indexerStatorCurrentAmp = 0.0;
+    public double indexerSupplyCurrentAmp = 0.0;
+    public double indexerVoltage = 0.0;
+    public double indexerTempC = 0.0;
     // public boolean indexerLeftConnected = false;
 
-    public double indexerRightVelocityRotationsPerSec = 0.0;
-    public double indexerRightPositionRots = 0.0;
-    public double indexerRightStatorCurrentAmp = 0.0;
-    public double indexerRightSupplyCurrentAmp = 0.0;
-    public double indexerRightVoltage = 0.0;
-    public double indexerRightTempC = 0.0;
     // public boolean indexerRightConnected = false;
 
   }
 
   //TODO: Add gear ratios
 
-  protected TalonFX leftIndexerMotor;
-  protected TalonFX rightIndexerMotor;
+  protected TalonFX indexerMotor;
 
-  private final VoltageOut leftVoltage =
-    new VoltageOut(0.0).withEnableFOC(true);
-  private final VoltageOut rightVoltage =
+  private final VoltageOut voltageOut =
     new VoltageOut(0.0).withEnableFOC(true);
   
-  private final StatusSignal<AngularVelocity> indexerLeftVelocityRotsPerSec;
-  private final StatusSignal<Angle> indexerLeftPositionRots;
-  private final StatusSignal<Current> indexerLeftStatorCurrent;
-  private final StatusSignal<Current> indexerLeftSupplyCurrent;
-  private final StatusSignal<Voltage> indexerLeftVoltage;
-  private final StatusSignal<Temperature> indexerLeftTemp;
+  private final StatusSignal<AngularVelocity> indexerVelocityRotsPerSec;
+  private final StatusSignal<Angle> indexerPositionRots;
+  private final StatusSignal<Current> indexerStatorCurrent;
+  private final StatusSignal<Current> indexerSupplyCurrent;
+  private final StatusSignal<Voltage> indexerVoltage;
+  private final StatusSignal<Temperature> indexerTemp;
 
-  private final StatusSignal<AngularVelocity> indexerRightVelocityRotsPerSec;
-  private final StatusSignal<Angle> indexerRightPositionRots;
-  private final StatusSignal<Current> indexerRightStatorCurrent;
-  private final StatusSignal<Current> indexerRightSupplyCurrent;
-  private final StatusSignal<Voltage> indexerRightVoltage;
-  private final StatusSignal<Temperature> indexerRightTemp;
-
-  public void setLeftIndexerVoltage(double voltage) {
-    leftIndexerMotor.setControl(leftVoltage.withOutput(voltage));
-  }
-  public void setRightIndexerVoltage(double voltage) {
-    rightIndexerMotor.setControl(rightVoltage.withOutput(voltage));
+  public void setVoltages(double voltage) {
+    indexerMotor.setControl(voltageOut.withOutput(voltage));
   }
   public void updateInputs(IndexerIOInputs inputs) {
     BaseStatusSignal.refreshAll(
-      indexerLeftVelocityRotsPerSec, indexerLeftPositionRots,indexerLeftStatorCurrent,indexerLeftSupplyCurrent,indexerLeftVoltage,indexerLeftTemp,
-         indexerRightVelocityRotsPerSec,indexerRightPositionRots,indexerRightStatorCurrent,
-         indexerRightSupplyCurrent,indexerRightVoltage,indexerRightTemp
+      indexerVelocityRotsPerSec, indexerPositionRots,indexerStatorCurrent,indexerSupplyCurrent,indexerVoltage,indexerTemp
     );
     // set inputs
-    inputs.indexerLeftVelocityRotationsPerSec = indexerLeftVelocityRotsPerSec.getValueAsDouble();
-    inputs.indexerLeftPositionRots = indexerLeftPositionRots.getValueAsDouble();
-    inputs.indexerLeftStatorCurrentAmp = indexerLeftStatorCurrent.getValueAsDouble();
-    inputs.indexerLeftSupplyCurrentAmp = indexerLeftSupplyCurrent.getValueAsDouble();
-    inputs.indexerLeftVoltage = indexerLeftVoltage.getValueAsDouble();
-    inputs.indexerLeftTempC = indexerLeftTemp.getValueAsDouble();
-    
-    inputs.indexerRightVelocityRotationsPerSec = indexerRightVelocityRotsPerSec.getValueAsDouble();
-    inputs.indexerRightPositionRots = indexerRightPositionRots.getValueAsDouble();
-    inputs.indexerRightStatorCurrentAmp = indexerRightStatorCurrent.getValueAsDouble();
-    inputs.indexerRightSupplyCurrentAmp = indexerRightSupplyCurrent.getValueAsDouble();
-    inputs.indexerRightVoltage = indexerRightVoltage.getValueAsDouble();
-    inputs.indexerRightTempC = indexerRightTemp.getValueAsDouble();
+    inputs.indexerVelocityRotationsPerSec = indexerVelocityRotsPerSec.getValueAsDouble();
+    inputs.indexerPositionRots = indexerPositionRots.getValueAsDouble();
+    inputs.indexerStatorCurrentAmp = indexerStatorCurrent.getValueAsDouble();
+    inputs.indexerSupplyCurrentAmp = indexerSupplyCurrent.getValueAsDouble();
+    inputs.indexerVoltage = indexerVoltage.getValueAsDouble();
+    inputs.indexerTempC = indexerTemp.getValueAsDouble();
   }
 }
