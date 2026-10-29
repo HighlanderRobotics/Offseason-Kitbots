@@ -81,6 +81,7 @@ public class FlywheelIO {
   }
 
   public void setVoltage(double voltage) {
+    velocitySetpointRotPerSecond = Double.NaN;
     leader.setControl(voltageOut.withOutput(voltage));
   }
 

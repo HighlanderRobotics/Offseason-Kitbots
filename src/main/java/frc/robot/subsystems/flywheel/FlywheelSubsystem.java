@@ -37,7 +37,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public static TalonFXConfiguration getFlywheelConfig() {
+    public static TalonFXConfiguration getFlywheelConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
