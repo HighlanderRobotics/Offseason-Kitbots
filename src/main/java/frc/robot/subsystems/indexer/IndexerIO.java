@@ -66,7 +66,7 @@ public class IndexerIO {
   private final StatusSignal<Voltage> indexerVoltage;
   private final StatusSignal<Temperature> indexerTemp;
 
-  public void setVoltages(double voltage) {
+  public void setVoltage(double voltage) {
     indexerMotor.setControl(voltageOut.withOutput(voltage));
   }
   public void updateInputs(IndexerIOInputs inputs) {
