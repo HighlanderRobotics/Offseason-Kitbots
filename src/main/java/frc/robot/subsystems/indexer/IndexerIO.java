@@ -46,9 +46,7 @@ public class IndexerIO {
     public double indexerSupplyCurrentAmp = 0.0;
     public double indexerVoltage = 0.0;
     public double indexerTempC = 0.0;
-    // public boolean indexerLeftConnected = false;
-
-    // public boolean indexerRightConnected = false;
+    // public boolean indexerConnected = false;
 
   }
 
