@@ -19,11 +19,11 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+// import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
+// import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
+// import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerIOSim extends IndexerIO {
   /** Creates a new IndexerIOSim. */
