@@ -25,15 +25,15 @@ public class IndexerIO {
   public IndexerIO(CANBus canbus) {
       indexerMotor = new TalonFX(11,canbus);
        // TODO: add a config variable for the motor ids in IndexerSubsystem instead of hardcoding it
-      indexerVelocityRotsPerSec = indexerMotor.getVelocity();
-      indexerPositionRots = indexerMotor.getPosition();
+      indexerVelocityRotationsPerSec = indexerMotor.getVelocity();
+      indexerPositionRotations = indexerMotor.getPosition();
       indexerStatorCurrent = indexerMotor.getStatorCurrent();
       indexerSupplyCurrent = indexerMotor.getSupplyCurrent();
       indexerVoltage = indexerMotor.getMotorVoltage();
       indexerTemp = indexerMotor.getDeviceTemp();
 
       BaseStatusSignal.setUpdateFrequencyForAll(50.0,
-         indexerVelocityRotsPerSec,indexerPositionRots,indexerStatorCurrent,indexerSupplyCurrent,indexerVoltage,indexerTemp
+         indexerVelocityRotationsPerSec,indexerPositionRotations,indexerStatorCurrent,indexerSupplyCurrent,indexerVoltage,indexerTemp
       );
       indexerMotor.optimizeBusUtilization();
       
@@ -41,7 +41,7 @@ public class IndexerIO {
   @AutoLog 
   public static class IndexerIOInputs {
     public double indexerVelocityRotationsPerSec = 0.0;
-    public double indexerPositionRots = 0.0;
+    public double indexerPositionRotations = 0.0;
     public double indexerStatorCurrentAmp = 0.0;
     public double indexerSupplyCurrentAmp = 0.0;
     public double indexerVoltage = 0.0;
@@ -57,8 +57,8 @@ public class IndexerIO {
   private final VoltageOut voltageOut =
     new VoltageOut(0.0).withEnableFOC(true);
   
-  private final StatusSignal<AngularVelocity> indexerVelocityRotsPerSec;
-  private final StatusSignal<Angle> indexerPositionRots;
+  private final StatusSignal<AngularVelocity> indexerVelocityRotationsPerSec;
+  private final StatusSignal<Angle> indexerPositionRotations;
   private final StatusSignal<Current> indexerStatorCurrent;
   private final StatusSignal<Current> indexerSupplyCurrent;
   private final StatusSignal<Voltage> indexerVoltage;
@@ -69,11 +69,11 @@ public class IndexerIO {
   }
   public void updateInputs(IndexerIOInputs inputs) {
     BaseStatusSignal.refreshAll(
-      indexerVelocityRotsPerSec, indexerPositionRots,indexerStatorCurrent,indexerSupplyCurrent,indexerVoltage,indexerTemp
+      indexerVelocityRotationsPerSec, indexerPositionRotations,indexerStatorCurrent,indexerSupplyCurrent,indexerVoltage,indexerTemp
     );
     // set inputs
-    inputs.indexerVelocityRotationsPerSec = indexerVelocityRotsPerSec.getValueAsDouble();
-    inputs.indexerPositionRots = indexerPositionRots.getValueAsDouble();
+    inputs.indexerVelocityRotationsPerSec = indexerVelocityRotationsPerSec.getValueAsDouble();
+    inputs.indexerPositionRotations = indexerPositionRotations.getValueAsDouble();
     inputs.indexerStatorCurrentAmp = indexerStatorCurrent.getValueAsDouble();
     inputs.indexerSupplyCurrentAmp = indexerSupplyCurrent.getValueAsDouble();
     inputs.indexerVoltage = indexerVoltage.getValueAsDouble();
