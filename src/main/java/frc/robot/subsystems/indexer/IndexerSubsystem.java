@@ -41,6 +41,9 @@ public class IndexerSubsystem extends SubsystemBase {
   public Command setVoltageCommand(DoubleSupplier voltage) {
       return this.run(() -> io.setVoltage(voltage.getAsDouble()));
   }
+  public Command stopIndexer() {
+    return this.run(() -> io.setVoltage(0));
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
