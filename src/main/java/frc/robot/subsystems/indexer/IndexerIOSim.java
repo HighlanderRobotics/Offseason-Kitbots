@@ -46,7 +46,6 @@ public class IndexerIOSim extends IndexerIO {
     indexerFxSimState = indexerMotor.getSimState();
     indexerFxSimState.setMotorType(MotorType.KrakenX60);
     indexerFxSimState.Orientation = ChassisReference.CounterClockwise_Positive; // check if this is right
-
     notifier = 
         new Notifier(
           () -> {

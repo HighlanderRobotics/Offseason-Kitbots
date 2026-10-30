@@ -33,7 +33,7 @@ public class IndexerIO {
       indexerTemp = indexerMotor.getDeviceTemp();
 
       BaseStatusSignal.setUpdateFrequencyForAll(50.0,
-         indexerVelocityRotsPerSec,indexerPositionRots,indexerStatorCurrent,indexerSupplyCurrent,indexerVoltage
+         indexerVelocityRotsPerSec,indexerPositionRots,indexerStatorCurrent,indexerSupplyCurrent,indexerVoltage,indexerTemp
       );
       indexerMotor.optimizeBusUtilization();
       
