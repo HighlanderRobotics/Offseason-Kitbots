@@ -1,17 +1,26 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.swerve.gyro;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-public class GyroIOSim extends SubsystemBase {
-  /** Creates a new GyroIOSim. */
-  public GyroIOSim() {}
+import edu.wpi.first.math.geometry.Rotation2d;
+import org.ironmaple.simulation.drivesims.GyroSimulation;
+
+public class GyroIOSim implements GyroIO {
+  private final GyroSimulation simulation;
+
+  public GyroIOSim(GyroSimulation simulation) {
+    this.simulation = simulation;
+  }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void setYaw(Rotation2d yaw) {
+    simulation.setRotation(yaw);
+  }
+
+  @Override
+  public void updateInputs(GyroIOInputs inputs) {
+    inputs.isConnected = true;
+    inputs.yaw = simulation.getGyroReading();
+    inputs.yawVelocityRadPerSec = simulation.getMeasuredAngularVelocity().in(RadiansPerSecond);
   }
 }
