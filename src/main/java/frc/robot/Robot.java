@@ -15,6 +15,7 @@ import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
@@ -48,6 +49,8 @@ public class Robot extends LoggedRobot {
   }
 
   Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+
+  controller.a().whileTrue(flywheel.runAtVoltage(() -> 10.0)); // todo: get controller layour from bora
 }
 
   @Override
