@@ -6,6 +6,8 @@ package frc.robot.subsystems.flywheel;
 
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class FlywheelSubsystem extends SubsystemBase {
   private FlywheelIO io;
+  private FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
   /** Creates a new FlywheelSubsystem. */
   public FlywheelSubsystem(CANBus canBus) {
     io = new FlywheelIO(canBus);
@@ -35,9 +38,11 @@ public class FlywheelSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    io.updateInputs(flywheelInputs);
+    Logger.processInputs("Flywheel", flywheelInputs);
   }
 
-    public static TalonFXConfiguration getFlywheelConfig() {
+  public static TalonFXConfiguration getFlywheelConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

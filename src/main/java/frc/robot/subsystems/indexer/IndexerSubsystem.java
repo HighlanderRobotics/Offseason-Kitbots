@@ -18,8 +18,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import frc.robot.subsystems.indexer.IndexerIO.IndexerIOInputs;
 
 public class IndexerSubsystem extends SubsystemBase {
   /** Creates a new IndexerSubsystem. */
@@ -72,11 +70,5 @@ public class IndexerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    io.updateInputs(inputs);
-    Logger.processInputs("Indexer", inputs);
-
-    if (Robot.isSimulation()) {
-      Logger.recordOutput("Indexer Voltage", talon.getMotorVoltage().getValueAsDouble());
-    }
   }
 }

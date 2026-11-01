@@ -4,21 +4,9 @@
 
 package frc.robot.subsystems.indexer;
 
-import org.littletonrobotics.junction.AutoLog;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.TalonFX;
-
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
-import edu.wpi.first.units.measure.Voltage;
-
-public class IndexerIO {
+public class IndexerIO extends SubsystemBase {
   /** Creates a new IndexerIO. */
 
 
