@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -27,6 +28,7 @@ public class Robot extends LoggedRobot {
   CommandXboxController controller = new CommandXboxController(0); // driver
   private FlywheelSubsystem flywheel = new FlywheelSubsystem(canBus);
   private IndexerSubsystem indexer = new IndexerSubsystem(canBus);
+  private IntakeSubsystem intake = new IntakeSubsystem(canBus);
 
   private final RobotContainer m_robotContainer;
 
