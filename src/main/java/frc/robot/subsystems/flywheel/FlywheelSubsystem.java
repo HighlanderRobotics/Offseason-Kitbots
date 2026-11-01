@@ -42,7 +42,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     Logger.processInputs("Flywheel", flywheelInputs);
   }
 
-    public static TalonFXConfiguration getFlywheelConfig() {
+  public static TalonFXConfiguration getFlywheelConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
