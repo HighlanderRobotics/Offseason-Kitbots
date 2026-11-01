@@ -1,5 +1,7 @@
 package frc.robot.subsystems.swerve.constants;
 
+import static edu.wpi.first.units.Units.FeetPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Pounds;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -42,14 +44,13 @@ public class KitbotSwerveConstants extends SwerveConstants {
 
     @Override
     public double getMaxLinearSpeed() {
-        return Units.feetToMeters(19.9);
-        // TODO: Double check this
+     return Units.feetToMeters(16.8); 
     }
 
     @Override
     public double getMaxLinearAcceleration() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaxLinearAcceleration'");
+        return 14.6;
+    // This is not an exact value
     }
 
     @Override
@@ -141,7 +142,5 @@ public class KitbotSwerveConstants extends SwerveConstants {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getHeadingVelocityKP'");
     }
-
-
 
 }
