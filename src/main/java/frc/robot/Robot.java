@@ -22,19 +22,13 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class Robot extends LoggedRobot {
-  private Command m_autonomousCommand;
-  
-  private CANBus canBus = new CANBus("*");
+  public enum RobotMode {
+    REAL, SIM, REPLAY;
+  }
 
-  CommandXboxController controller = new CommandXboxController(0); // driver
-  private FlywheelSubsystem flywheel = new FlywheelSubsystem(canBus);
-  private IndexerSubsystem indexer = new IndexerSubsystem(canBus);
-  private IntakeSubsystem intake = new IntakeSubsystem(canBus);
-
-  private final RobotContainer m_robotContainer;
+  public static final RobotMode ROBOT_MODE = Robot.isReal() ? RobotMode.REAL : RobotMode.SIM;
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
 
     Logger.recordMetadata("ProjectName", "John Kitbot"); // props to simon for the beutiful name
 
@@ -68,26 +62,10 @@ public class Robot extends LoggedRobot {
   public void disabledExit() {}
 
   @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
-    }
-  }
-
-  @Override
   public void autonomousPeriodic() {}
 
   @Override
   public void autonomousExit() {}
-
-  @Override
-  public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
 
   @Override
   public void teleopPeriodic() {}
