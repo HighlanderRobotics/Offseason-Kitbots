@@ -4,14 +4,64 @@
 
 package frc.robot.subsystems.indexer;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 
-public class IndexerIOSim extends SubsystemBase {
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+public class IndexerIOSim extends IndexerIO {
   /** Creates a new IndexerIOSim. */
-  public IndexerIOSim() {}
+  protected TalonFX indexerMotor;
+  // TODO: add a config variable for the motor ids in IndexerSubsystem instead of
+  //  hardcoding it
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  TalonFXSimState indexerFxSimState;
+  DCMotorSim physicsSimIndexer;
+  private double simLoopPeriod = 0.002;
+  private Notifier notifier;
+  private double lastSimTime = 0.0;
+  public IndexerIOSim(int INDEXER_MOTOR_ID, CANBus canbus) {
+    super(INDEXER_MOTOR_ID, canbus);
+
+    physicsSimIndexer =
+      new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60Foc(1), 0, 0),
+            // Fix the gear ratio and meter thing
+            DCMotor.getKrakenX60Foc(1));
+    indexerFxSimState = indexerMotor.getSimState();
+    
+    indexerFxSimState.setMotorType(MotorType.KrakenX60);
+    indexerFxSimState.Orientation = ChassisReference.CounterClockwise_Positive; // check if this is right
+    notifier = 
+        new Notifier(
+          () -> {
+            final double currentTime = Timer.getTimestamp();
+            final double deltaTime = currentTime - lastSimTime;
+            lastSimTime = currentTime;
+
+            indexerFxSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+            physicsSimIndexer.setInputVoltage(indexerFxSimState.getMotorVoltage());
+            physicsSimIndexer.update(deltaTime);
+            indexerFxSimState.setRawRotorPosition(
+                  physicsSimIndexer.getAngularPosition().in(Rotations) * 0); // add gear ratio
+              indexerFxSimState.setRotorVelocity(
+                  physicsSimIndexer.getAngularVelocity().in(RotationsPerSecond) * 0); // add gear ratio
+          });
+
+
+    // TODO: finish this whole thing idk if TalonFX is the right class for the motors
+    notifier.setName("Indexer");
+    notifier.startPeriodic(simLoopPeriod);
   }
+
 }
