@@ -24,7 +24,7 @@ public class IndexerIO extends SubsystemBase {
 
 
   public IndexerIO(int INDEXER_MOTOR_ID, CANBus canbus) {
-      final TalonFX indexerMotor = new TalonFX(INDEXER_MOTOR_ID,canbus);
+      indexerMotor = new TalonFX(INDEXER_MOTOR_ID,canbus);
       indexerMotor.getConfigurator().apply(IndexerSubsystem.getIndexerConfig());
 
       indexerAngularVelocityRotationsPerSec = indexerMotor.getVelocity();
@@ -54,7 +54,7 @@ public class IndexerIO extends SubsystemBase {
 
   //TODO: Add gear ratios
 
-  protected TalonFX indexerMotor;
+  protected final TalonFX indexerMotor;
 
   private final VoltageOut voltageOut =
     new VoltageOut(0.0).withEnableFOC(true);

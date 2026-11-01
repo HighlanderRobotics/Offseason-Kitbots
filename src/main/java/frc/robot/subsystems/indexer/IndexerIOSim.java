@@ -39,6 +39,7 @@ public class IndexerIOSim extends IndexerIO {
             // Fix the gear ratio and meter thing
             DCMotor.getKrakenX60Foc(1));
     indexerFxSimState = indexerMotor.getSimState();
+    
     indexerFxSimState.setMotorType(MotorType.KrakenX60);
     indexerFxSimState.Orientation = ChassisReference.CounterClockwise_Positive; // check if this is right
     notifier = 
@@ -50,6 +51,7 @@ public class IndexerIOSim extends IndexerIO {
 
             indexerFxSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
             physicsSimIndexer.setInputVoltage(indexerFxSimState.getMotorVoltage());
+            physicsSimIndexer.update(deltaTime);
             indexerFxSimState.setRawRotorPosition(
                   physicsSimIndexer.getAngularPosition().in(Rotations) * 0); // add gear ratio
               indexerFxSimState.setRotorVelocity(

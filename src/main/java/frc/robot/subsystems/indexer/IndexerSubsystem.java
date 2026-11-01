@@ -52,10 +52,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
 
   VoltageOut voltageOut = new VoltageOut(0);
-  TalonFX talon;
+  // TalonFX talon; // i dont think i need this but im not sure
 
   public IndexerSubsystem(CANBus canbus) {
-    talon = new TalonFX(INDEXER_MOTOR_ID,canbus);
+    //talon = new TalonFX(INDEXER_MOTOR_ID,canbus); // also I dont need this
     this.io = Robot.isReal() ? new IndexerIO(INDEXER_MOTOR_ID, canbus) : new IndexerIOSim(INDEXER_MOTOR_ID, canbus);
   }
   // I don't know if I need this lol
@@ -71,5 +71,7 @@ public class IndexerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.processInputs("Indexer", inputs);
   }
 }
