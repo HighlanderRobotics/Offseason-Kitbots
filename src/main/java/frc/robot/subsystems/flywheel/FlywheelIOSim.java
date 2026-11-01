@@ -40,8 +40,8 @@ public class FlywheelIOSim extends FlywheelIO {
       wheelSim.setInputVoltage(leaderTalonSimState.getMotorVoltage());
       wheelSim.update(deltaTime);
 
-      // "RadPerSecSq", why not just call it rps2 or something shorder
-      wheelSim.setAngularVelocity(wheelSim.getAngularAccelerationRadPerSecSq());
+      // wait i set the velocity to the acceleration oops
+      wheelSim.setAngularVelocity(wheelSim.getAngularVelocityRPM());
     });
     notifier.startPeriodic(0.002);
   } 
