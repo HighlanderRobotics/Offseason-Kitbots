@@ -9,8 +9,11 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,19 +23,41 @@ import frc.robot.subsystems.indexer.IndexerIO.IndexerIOInputs;
 
 public class IndexerSubsystem extends SubsystemBase {
   /** Creates a new IndexerSubsystem. */
+  public static TalonFXConfiguration getIndexerConfig(){
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    config.Feedback.SensorToMechanismRatio = 1.0; // TODO: add gear ratio
+
+    config.CurrentLimits.StatorCurrentLimit = 30.0; // Idk if its good its in amps
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    config.CurrentLimits.SupplyCurrentLimit = 30.0; // Idk if its good its in amps
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    // TODO: add PID values
+    config.Slot0.kA = 0.0;
+    config.Slot0.kP = 0.0;
+    config.Slot0.kI = 0.0;
+    config.Slot0.kD = 0.0;
+    config.Slot0.kS = 0.0;
+    config.Slot0.kV = 0.0;
+    
+    return config;
+  }
   IndexerIO io;
   IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
-  public static final int TALON_ID = 0; // I might change this to become a config but idk. 
-  // however I defintely need to change the ID when I figure that out
+  public static final int INDEXER_MOTOR_ID = 11;
 
 
   VoltageOut voltageOut = new VoltageOut(0);
   TalonFX talon;
 
   public IndexerSubsystem(CANBus canbus) {
-    talon = new TalonFX(TALON_ID,canbus);
-    this.io = Robot.isReal() ? new IndexerIO(canbus) : new IndexerIOSim(canbus);
+    talon = new TalonFX(INDEXER_MOTOR_ID,canbus);
+    this.io = Robot.isReal() ? new IndexerIO(INDEXER_MOTOR_ID, canbus) : new IndexerIOSim(INDEXER_MOTOR_ID, canbus);
   }
   // I don't know if I need this lol
   private void setVoltage(double voltage) {

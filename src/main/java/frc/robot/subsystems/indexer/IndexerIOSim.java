@@ -35,9 +35,9 @@ public class IndexerIOSim extends IndexerIO {
   private double simLoopPeriod = 0.002;
   private Notifier notifier;
   private double lastSimTime = 0.0;
-  public IndexerIOSim(CANBus canbus) {
-    super(canbus);
-    
+  public IndexerIOSim(int INDEXER_MOTOR_ID, CANBus canbus) {
+    super(INDEXER_MOTOR_ID, canbus);
+
     physicsSimIndexer =
       new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60Foc(1), 0, 0),
