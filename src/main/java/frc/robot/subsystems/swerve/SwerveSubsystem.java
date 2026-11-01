@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems.swerve;
 
 import static edu.wpi.first.units.Units.Inch;
@@ -37,10 +38,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Robot;
 import frc.robot.Robot.RobotMode;
 import frc.robot.Superstructure.FeedTarget;
-import frc.robot.components.camera.Camera;
-import frc.robot.components.camera.CameraIOReal;
-import frc.robot.components.camera.CameraIOSim;
-import frc.robot.subsystems.swerve.constants.AlphaSwerveConstants;
+import frc.robot.subsystems.swerve.constants.KitbotSwerveConstants;
 import frc.robot.subsystems.swerve.constants.SwerveConstants;
 import frc.robot.subsystems.swerve.gyro.GyroIO;
 import frc.robot.subsystems.swerve.gyro.GyroIOInputsAutoLogged;
@@ -74,13 +72,11 @@ import org.littletonrobotics.junction.Logger;
 public class SwerveSubsystem extends SubsystemBase {
   // decide which set of swerve constants to use based on robot edition
   // defaulting to comp is probably safer?
-  public static final SwerveConstants SWERVE_CONSTANTS = new AlphaSwerveConstants();
+  public static final SwerveConstants SWERVE_CONSTANTS = new KitbotSwerveConstants();
 
   private final Module[] modules; // Front Left, Front Right, Back Left, Back Right
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-  private final Camera[] cameras;
-  private final Pose3d[] cameraPoses;
   private final OdometryThreadIO odometryThread;
   private final OdometryThreadIOInputs odometryThreadInputs = new OdometryThreadIOInputs();
   private double lastOdometryUpdateTimestamp = 0.0;
@@ -89,6 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private SwerveDrivePoseEstimator estimator;
 
+ 
   private SwerveModulePosition[] lastModulePositions =
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -118,10 +115,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final SysIdRoutine turnSysid;
 
-  private final SwerveModuleSimulationConfig mk5nModuleConfig =
-      new SwerveModuleSimulationConfig(
-          DCMotor.getKrakenX60Foc(1),
-          DCMotor.getKrakenX44Foc(1),
+  private final SwerveModuleSimulationConfig mk5nModuleConfig = new SwerveModuleSimulationConfig(
+    DCMotor.getKrakenX60Foc(1),
+    DCMotor.getKrakenX44Foc(1),
           SwerveSubsystem.SWERVE_CONSTANTS.getDriveGearRatio(),
           SwerveSubsystem.SWERVE_CONSTANTS.getTurnGearRatio(),
           Volts.of(0.1),
@@ -129,11 +125,8 @@ public class SwerveSubsystem extends SubsystemBase {
           Inch.of(2),
           KilogramSquareMeters.of(0.03),
           2.25);
-  // ripped the drive friction voltage, steer friction voltage, and steer rotational inertia from
-  // the mk4n- no clue if that's right lmao
-  // Maple Sim Stuff
-  // TODO: UPDATE DRIVETRAIN SIM!!!
-  private final DriveTrainSimulationConfig driveTrainSimConfig =
+
+          private final DriveTrainSimulationConfig driveTrainSimConfig =
       DriveTrainSimulationConfig.Default()
           .withGyro(COTS.ofPigeon2())
           .withSwerveModule(
@@ -182,34 +175,8 @@ public class SwerveSubsystem extends SubsystemBase {
                     swerveSimulation.getModules()[3],
                     canbus))
           };
-      // cameras =
-      //     Arrays.stream(SWERVE_CONSTANTS.getCameraConstants())
-      //         .map((constants) -> new Camera(new CameraIOSim(constants)))
-      //         .toArray(Camera[]::new);
-      cameras =
-          new Camera[] {
-            new Camera(
-                new CameraIOSim(
-                    SWERVE_CONSTANTS.getCameraConstants()[0],
-                    () -> new Pose3d(swerveSimulation.getSimulatedDriveTrainPose()),
-                    SWERVE_CONSTANTS.getFieldTagLayout())),
-            new Camera(
-                new CameraIOSim(
-                    SWERVE_CONSTANTS.getCameraConstants()[1],
-                    () -> new Pose3d(swerveSimulation.getSimulatedDriveTrainPose()),
-                    SWERVE_CONSTANTS.getFieldTagLayout())),
-            // new Camera(
-            //     new CameraIOSim(
-            //         SWERVE_CONSTANTS.getCameraConstants()[2],
-            //         () -> new Pose3d(swerveSimulation.getSimulatedDriveTrainPose()),
-            //         SWERVE_CONSTANTS.getFieldTagLayout())),
-            // new Camera(
-            //     new CameraIOSim(
-            //         SWERVE_CONSTANTS.getCameraConstants()[3],
-            //         () -> new Pose3d(swerveSimulation.getSimulatedDriveTrainPose()),
-            //         SWERVE_CONSTANTS.getFieldTagLayout()))
-          };
-    } else {
+
+ } else {
       // Add real modules
       modules =
           new Module[] {
@@ -218,10 +185,9 @@ public class SwerveSubsystem extends SubsystemBase {
             new Module(new ModuleIOReal(SWERVE_CONSTANTS.getBackLeftModuleConstants(), canbus)),
             new Module(new ModuleIOReal(SWERVE_CONSTANTS.getBackRightModuleConstants(), canbus))
           };
-      cameras =
-          Arrays.stream(SWERVE_CONSTANTS.getCameraConstants())
-              .map((constants) -> new Camera(new CameraIOReal(constants)))
-              .toArray(Camera[]::new);
+
+          // TODO: magnitude and wheels of friction
+
 
       // cameras =
       //     new Camera[] {
@@ -232,14 +198,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
       // ,
       // new Camera(new CameraIOReal(SWERVE_CONSTANTS.getCameraConstants()[3]))
-      // };
-    }
+}
 
-    this.cameraPoses = new Pose3d[cameras.length];
-    // needed to prevent NPE
-    for (int i = 0; i < cameras.length; i++) {
-      cameraPoses[i] = Pose3d.kZero;
-    }
 
     this.gyroIO =
         Robot.ROBOT_MODE != RobotMode.SIM
@@ -291,20 +251,6 @@ public class SwerveSubsystem extends SubsystemBase {
                     .get(odometryThreadInputs.sampledStates.size() - 1)
                     .timestamp();
           }
-
-          Tracer.trace("Update gyro inputs", () -> gyroIO.updateInputs(gyroInputs));
-          Logger.processInputs("Swerve/Gyro", gyroInputs);
-
-          for (Module module : modules) {
-            Tracer.trace("Update module inputs for " + module.getPrefix(), module::periodic);
-          }
-
-          for (Camera camera : cameras) {
-            Tracer.trace("Camera " + camera.getName() + " Periodic", camera::periodic);
-          }
-
-          Tracer.trace("Update odometry", this::updateOdometry);
-          Tracer.trace("Update vision", this::updateVision);
 
           // Logger.recordOutput("Current Hub Pose", FieldUtils.getCurrentHubPose());
         });
@@ -386,29 +332,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
-  private void updateVision() {
-    for (int i = 0; i < cameras.length; i++) {
-      cameras[i].updateCamera(estimator);
-      cameraPoses[i] = cameras[i].getPose();
-    }
-    // only do all this logging stuff if we're not irl for performance
-
-    // Logger.recordOutput("Vision/Camera Poses", cameraPoses);
-    Pose3d[] arr = new Pose3d[cameras.length];
-    for (int k = 0; k < cameras.length; k++) {
-      // honetsly not sure if this distinction is the way to go but
-      if (Robot.ROBOT_MODE == RobotMode.SIM)
-        // If we're in sim, use the maplesim pose to calculate vision
-        arr[k] =
-            new Pose3d(swerveSimulation.getSimulatedDriveTrainPose())
-                .transformBy(cameras[k].getCameraConstants().robotToCamera());
-      else {
-        // if we're in replay, use whatever the pose was
-        arr[k] = getPose3d().transformBy(cameras[k].getCameraConstants().robotToCamera());
-      }
-    }
-    // Logger.recordOutput("Vision/Camera Poses on Robot", arr);
-  }
 
   /**
    * Runs the modules to the specified ChassisSpeeds (robot velocity)
@@ -424,7 +347,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // Convert drivetrain setpoint into individual module setpoints
     final SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     // Makes sure each wheel isn't asked to go above its max. Recalcs the states if needed
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, SWERVE_CONSTANTS.getMaxLinearSpeed());
     Logger.recordOutput("SwerveStates/Setpoints", states);
 
     Logger.recordOutput("Swerve/Target Speeds", speeds);
@@ -574,17 +496,18 @@ public class SwerveSubsystem extends SubsystemBase {
     return getPose().getRotation();
   }
 
-  public void resetPose(Pose2d newPose) {
-    estimator.resetPose(newPose);
-    if (Robot.ROBOT_MODE == RobotMode.SIM) {
-      swerveSimulation.setSimulationWorldPose(newPose);
-      swerveSimulation.setRobotSpeeds(new ChassisSpeeds());
-    }
-  }
+//   public void resetPose(Pose2d newPose) {
+//     estimator.resetPose(newPose);
+//     if (Robot.ROBOT_MODE == RobotMode.SIM) {
+//       swerveSimulation.setSimulationWorldPose(newPose);
+//       swerveSimulation.setRobotSpeeds(new ChassisSpeeds());
+//     }
+//   }
 
-  public void setYaw(Rotation2d newYaw) {
-    resetPose(new Pose2d(getPose().getTranslation(), newYaw));
-  }
+//   public void setYaw(Rotation2d newYaw) {
+//     resetPose(new Pose2d(getPose().getTranslation(), newYaw));
+//   }
+// I dont think that this is needed since we dont have autoaim?
 
   public void setGyroYaw(Rotation2d yaw) {
     gyroIO.setYaw(yaw);
@@ -653,9 +576,10 @@ public class SwerveSubsystem extends SubsystemBase {
     };
   }
 
-  public void resetMapleSimPose() {
-    resetPose(swerveSimulation.getSimulatedDriveTrainPose());
-  }
+//   public void resetMapleSimPose() {
+//     resetPose(swerveSimulation.getSimulatedDriveTrainPose());
+//   }
+// It doesn't need to do this because it doesn't have cameras I think
 
   @Override
   public void simulationPeriodic() {

@@ -1,0 +1,147 @@
+package frc.robot.subsystems.swerve.constants;
+
+import static edu.wpi.first.units.Units.Pounds;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Mass;
+import frc.robot.subsystems.swerve.module.Module.ModuleConstants;
+
+public class KitbotSwerveConstants extends SwerveConstants {
+
+    @Override
+    public String getName() {
+       return "Kitbot";
+    }
+
+    @Override
+    public double getTrackWidthX() {
+        return Units.inchesToMeters(21.75);
+    }
+
+    @Override
+    public double getTrackWidthY() {
+        return Units.inchesToMeters(21.75);
+
+    }
+
+    @Override
+    public double getBumperWidth() {
+        return Units.inchesToMeters(27.00);
+    }
+
+    @Override
+    public double getBumperLength() {
+         return Units.inchesToMeters(27.00);
+    }
+
+    @Override
+    public double getMaxLinearSpeed() {
+        return Units.feetToMeters(19.9);
+        // TODO: Double check this
+    }
+
+    @Override
+    public double getMaxLinearAcceleration() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getMaxLinearAcceleration'");
+    }
+
+    @Override
+    public double getDriveGearRatio() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getMaxLinearAcceleration'");
+    }
+
+    @Override
+    public double getTurnGearRatio() {
+        return 5.27;
+        // got this from https://www.swervedrivespecialties.com/products/mk5n-swerve-module
+    }
+
+    @Override
+    public Mass getMass() {
+        // 16 lb battery, 15 lb bumpers (might change)
+        return Pounds.of(77.186 + 16.0 + 15.0);
+    }
+
+    @Override
+    public ModuleConstants getFrontLeftModuleConstants() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFrontRightModuleConstants'");
+    }
+
+    @Override
+    public ModuleConstants getFrontRightModuleConstants() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getFrontRightModuleConstants'");
+    }
+
+    @Override
+    public ModuleConstants getBackLeftModuleConstants() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBackLeftModuleConstants'");
+    }
+
+    @Override
+    public ModuleConstants getBackRightModuleConstants() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBackRightModuleConstants'");
+    }
+
+    @Override
+    public int getGyroID() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getGyroID'");
+    }
+
+    @Override
+    public Pigeon2Configuration getGyroConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getGyroConfig'");
+    }
+
+    @Override
+    public TalonFXConfiguration getDriveConfig() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDriveConfig'");
+    }
+
+    @Override
+    public TalonFXConfiguration getTurnConfig(int cancoderID) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTurnConfig'");
+    }
+
+    @Override
+    public MotorType getTurnMotorType() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTurnMotorType'");
+    }
+
+    @Override
+    public MotorType getDriveMotorType() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDriveMotorType'");
+    }
+
+    @Override
+    public CANcoderConfiguration getCancoderConfig(Rotation2d cancoderOffset) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCancoderConfig'");
+    }
+
+    @Override
+    public double getHeadingVelocityKP() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getHeadingVelocityKP'");
+    }
+
+
+
+}

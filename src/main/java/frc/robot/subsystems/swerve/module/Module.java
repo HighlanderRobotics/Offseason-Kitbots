@@ -7,6 +7,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.subsystems.swerve.constants.SwerveConstants;
+
 
 import org.littletonrobotics.junction.Logger;
 
@@ -97,9 +99,8 @@ public class Module {
     // same proportion of the max supply voltage (12) to the motor
     // i.e. if the max speed is 10 m/s, and we want to go 5 m/s, that's 1/2 of the max speed. So we
     // apply 1/2 of the max supply voltage to the motor: 6V
-    double volts =
+        double volts =
         state.speedMetersPerSecond * 12 / SwerveSubsystem.SWERVE_CONSTANTS.getMaxLinearSpeed();
-
     runVoltageSetpoint(volts, state.angle, focEnabled);
 
     return state;
