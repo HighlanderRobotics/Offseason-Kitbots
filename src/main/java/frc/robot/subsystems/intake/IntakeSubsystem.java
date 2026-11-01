@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.CANBus;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem() {}
+  public IntakeSubsystem(CANBus canBus) {} // satisfy requirement for robot.java
 
   @Override
   public void periodic() {
