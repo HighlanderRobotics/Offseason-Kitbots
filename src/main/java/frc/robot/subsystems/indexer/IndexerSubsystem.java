@@ -49,13 +49,8 @@ public class IndexerSubsystem extends SubsystemBase {
   IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
   public static final int INDEXER_MOTOR_ID = 11;
-
-
-  VoltageOut voltageOut = new VoltageOut(0);
-  // TalonFX talon; // i dont think i need this but im not sure
-
+  
   public IndexerSubsystem(CANBus canbus) {
-    //talon = new TalonFX(INDEXER_MOTOR_ID,canbus); // also I dont need this
     this.io = Robot.isReal() ? new IndexerIO(INDEXER_MOTOR_ID, canbus) : new IndexerIOSim(INDEXER_MOTOR_ID, canbus);
   }
   // I don't know if I need this lol

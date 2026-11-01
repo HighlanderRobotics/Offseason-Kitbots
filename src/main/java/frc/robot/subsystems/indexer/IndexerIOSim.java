@@ -23,7 +23,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 public class IndexerIOSim extends IndexerIO {
   /** Creates a new IndexerIOSim. */
   protected TalonFX indexerMotor;
-  // TODO: add a config variable for the motor ids in IndexerSubsystem instead of hardcoding it
+  // TODO: add a config variable for the motor ids in IndexerSubsystem instead of
+  //  hardcoding it
 
   TalonFXSimState indexerFxSimState;
   DCMotorSim physicsSimIndexer;
