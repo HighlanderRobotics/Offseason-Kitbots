@@ -55,8 +55,7 @@ public class KitbotSwerveConstants extends SwerveConstants {
 
     @Override
     public double getDriveGearRatio() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaxLinearAcceleration'");
+        return 7.03;
     }
 
     @Override
@@ -71,34 +70,34 @@ public class KitbotSwerveConstants extends SwerveConstants {
         return Pounds.of(77.186 + 16.0 + 15.0);
     }
 
-    @Override
-    public ModuleConstants getFrontLeftModuleConstants() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFrontRightModuleConstants'");
-    }
 
-    @Override
-    public ModuleConstants getFrontRightModuleConstants() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFrontRightModuleConstants'");
-    }
+ @Override
+  public ModuleConstants getFrontLeftModuleConstants() {
+    return new ModuleConstants(
+        0, "Front Left", 0, 1, 0, Rotation2d.fromRotations(-0.29).plus(Rotation2d.k180deg));
+  }
 
-    @Override
-    public ModuleConstants getBackLeftModuleConstants() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBackLeftModuleConstants'");
-    }
+  @Override
+  public ModuleConstants getFrontRightModuleConstants() {
+    return new ModuleConstants(1, "Front Right", 2, 3, 1, Rotation2d.fromRotations(0.012));
+  }
 
-    @Override
-    public ModuleConstants getBackRightModuleConstants() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBackRightModuleConstants'");
-    }
+  @Override
+  public ModuleConstants getBackLeftModuleConstants() {
+    return new ModuleConstants(
+        2, "Back Left", 4, 5, 2, Rotation2d.fromRotations(0.229).plus(Rotation2d.k180deg));
+  }
+
+  @Override
+  public ModuleConstants getBackRightModuleConstants() {
+    return new ModuleConstants(3, "Back Right", 6, 7, 3, Rotation2d.fromRotations(-0.205));
+  }
+
+
 
     @Override
     public int getGyroID() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getGyroID'");
+return 0;
     }
 
     @Override
