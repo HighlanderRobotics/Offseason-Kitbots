@@ -13,12 +13,15 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import org.littletonrobotics.junction.Logger;
 
 public class FlywheelSubsystem extends SubsystemBase {
   private FlywheelIO io;
+  private FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
   /** Creates a new FlywheelSubsystem. */
   public FlywheelSubsystem(CANBus canBus) {
-    io = new FlywheelIO(canBus);
+    io = Robot.isReal() ? new FlywheelIO(canBus) : new FlywheelIOSim(canBus);
   }
 
   public Command runAtVelocity(DoubleSupplier velocity) {
@@ -35,6 +38,10 @@ public class FlywheelSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    io.updateInputs(inputs);
+    Logger.processInputs("Flywheel", inputs);
+
+    Logger.recordOutput("Flywheel Velocity", io.getSetpointRotPerSecond());
   }
 
   public static TalonFXConfiguration getFlywheelConfig() {
