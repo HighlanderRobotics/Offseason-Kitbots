@@ -4,12 +4,23 @@
 
 package frc.robot.subsystems.indexer;
 
+import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.CANBus;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
   /** Creates a new IndexerSubsystem. */
-  public IndexerSubsystem() {}
+  public IndexerSubsystem(CANBus canBus) {}
 
+  public Command setVoltageCommand(DoubleSupplier voltage) {
+    return new Command() {};
+  }
+  public Command stopIndexer() {
+    return new Command() {};
+  };
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -2,6 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+
+// Code will not build
 package frc.robot;
 
 import org.littletonrobotics.junction.LogFileUtil;
@@ -20,13 +22,20 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class Robot extends LoggedRobot {
   public enum RobotMode {
     REAL, SIM, REPLAY;
   }
+  CANBus canBus = new CANBus("*");
+  private FlywheelSubsystem flywheel = new FlywheelSubsystem(canBus);
+  private IntakeSubsystem intake = new IntakeSubsystem(canBus);
+  private IndexerSubsystem indexer = new IndexerSubsystem(canBus);
+  private SwerveSubsystem swerve = new SwerveSubsystem(canBus);
 
   public static final RobotMode ROBOT_MODE = Robot.isReal() ? RobotMode.REAL : RobotMode.SIM;
+  private CommandXboxController controller = new CommandXboxController(0); // idk if we are doing operator
 
   public Robot() {
 
@@ -43,8 +52,12 @@ public class Robot extends LoggedRobot {
   }
 
   Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+  flywheel.setDefaultCommand(flywheel.stopFlywheel());
+  indexer.setDefaultCommand(indexer.stopIndexer());
+  intake.setDefaultCommand(intake.stopIntake());
 
   controller.a().whileTrue(flywheel.runAtVoltage(() -> 10.0)); // todo: get controller layour from bora
+  controller.b().whileTrue(Commands.parallel(flywheel.runAtVoltage(() -> -5.0), indexer.setVoltageCommand(() -> -5.0), indexer.setVoltageCommand(() -> -5.0)));
 }
 
   @Override
