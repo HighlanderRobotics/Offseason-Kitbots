@@ -15,10 +15,10 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem(CANBus canBus) {} // satisfy requirement for robot.java
   public Command setVoltagesCommand(DoubleSupplier value) {
-    return new Command() {};
+    return this.idle();
   }
   public Command stopIntake() {
-    return new Command() {};
+    return this.idle();
   }
   @Override
   public void periodic() {

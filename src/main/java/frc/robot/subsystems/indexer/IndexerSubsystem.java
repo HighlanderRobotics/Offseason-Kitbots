@@ -16,10 +16,10 @@ public class IndexerSubsystem extends SubsystemBase {
   public IndexerSubsystem(CANBus canBus) {}
 
   public Command setVoltageCommand(DoubleSupplier voltage) {
-    return new Command() {};
+    return this.idle();
   }
   public Command stopIndexer() {
-    return new Command() {};
+    return this.idle();
   };
   @Override
   public void periodic() {
