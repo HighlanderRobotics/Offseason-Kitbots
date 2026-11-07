@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems.swerve;
 
 import static edu.wpi.first.units.Units.Inch;
@@ -15,14 +14,13 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -37,7 +35,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Robot;
 import frc.robot.Robot.RobotMode;
-import frc.robot.Superstructure.FeedTarget;
 import frc.robot.subsystems.swerve.constants.KitbotSwerveConstants;
 import frc.robot.subsystems.swerve.constants.SwerveConstants;
 import frc.robot.subsystems.swerve.gyro.GyroIO;
@@ -53,6 +50,7 @@ import frc.robot.subsystems.swerve.odometry.PhoenixOdometryThread;
 import frc.robot.subsystems.swerve.odometry.PhoenixOdometryThread.Samples;
 import frc.robot.subsystems.swerve.odometry.PhoenixOdometryThread.SignalID;
 import frc.robot.subsystems.swerve.odometry.PhoenixOdometryThread.SignalType;
+import frc.robot.utils.FieldUtils;
 import frc.robot.utils.Tracer;
 import java.util.Arrays;
 import java.util.List;
@@ -85,7 +83,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private SwerveDrivePoseEstimator estimator;
 
- 
   private SwerveModulePosition[] lastModulePositions =
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -115,9 +112,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final SysIdRoutine turnSysid;
 
-  private final SwerveModuleSimulationConfig mk5nModuleConfig = new SwerveModuleSimulationConfig(
-    DCMotor.getKrakenX60Foc(1),
-    DCMotor.getKrakenX44Foc(1),
+  private final SwerveModuleSimulationConfig mk5nModuleConfig =
+      new SwerveModuleSimulationConfig(
+          DCMotor.getKrakenX60Foc(1),
+          DCMotor.getKrakenX44Foc(1),
           SwerveSubsystem.SWERVE_CONSTANTS.getDriveGearRatio(),
           SwerveSubsystem.SWERVE_CONSTANTS.getTurnGearRatio(),
           Volts.of(0.1),
@@ -125,8 +123,11 @@ public class SwerveSubsystem extends SubsystemBase {
           Inch.of(2),
           KilogramSquareMeters.of(0.03),
           2.25);
-
-          private final DriveTrainSimulationConfig driveTrainSimConfig =
+  // ripped the drive friction voltage, steer friction voltage, and steer rotational inertia from
+  // the mk4n- no clue if that's right lmao
+  // Maple Sim Stuff
+  // TODO: UPDATE DRIVETRAIN SIM!!!
+  private final DriveTrainSimulationConfig driveTrainSimConfig =
       DriveTrainSimulationConfig.Default()
           .withGyro(COTS.ofPigeon2())
           .withSwerveModule(
@@ -148,6 +149,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final SwerveDriveSimulation swerveSimulation =
       new SwerveDriveSimulation(driveTrainSimConfig, new Pose2d(3, 3, Rotation2d.kZero));
+
 
   public SwerveSubsystem(CANBus canbus) {
     if (Robot.ROBOT_MODE == RobotMode.SIM) {
@@ -175,8 +177,7 @@ public class SwerveSubsystem extends SubsystemBase {
                     swerveSimulation.getModules()[3],
                     canbus))
           };
-
- } else {
+    } else {
       // Add real modules
       modules =
           new Module[] {
@@ -185,21 +186,7 @@ public class SwerveSubsystem extends SubsystemBase {
             new Module(new ModuleIOReal(SWERVE_CONSTANTS.getBackLeftModuleConstants(), canbus)),
             new Module(new ModuleIOReal(SWERVE_CONSTANTS.getBackRightModuleConstants(), canbus))
           };
-
-          // TODO: magnitude and wheels of friction
-
-
-      // cameras =
-      //     new Camera[] {
-      //       new Camera(new CameraIOReal(SWERVE_CONSTANTS.getCameraConstants()[0])),
-      //       new Camera(new CameraIOReal(SWERVE_CONSTANTS.getCameraConstants()[1]))
-      // ,
-      // new Camera(new CameraIOReal(SWERVE_CONSTANTS.getCameraConstants()[2]))
-
-      // ,
-      // new Camera(new CameraIOReal(SWERVE_CONSTANTS.getCameraConstants()[3]))
-}
-
+    }
 
     this.gyroIO =
         Robot.ROBOT_MODE != RobotMode.SIM
@@ -251,6 +238,15 @@ public class SwerveSubsystem extends SubsystemBase {
                     .get(odometryThreadInputs.sampledStates.size() - 1)
                     .timestamp();
           }
+
+          Tracer.trace("Update gyro inputs", () -> gyroIO.updateInputs(gyroInputs));
+          Logger.processInputs("Swerve/Gyro", gyroInputs);
+
+          for (Module module : modules) {
+            Tracer.trace("Update module inputs for " + module.getPrefix(), module::periodic);
+          }
+
+          Tracer.trace("Update odometry", this::updateOdometry);
 
           // Logger.recordOutput("Current Hub Pose", FieldUtils.getCurrentHubPose());
         });
@@ -332,7 +328,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
-
   /**
    * Runs the modules to the specified ChassisSpeeds (robot velocity)
    *
@@ -347,6 +342,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // Convert drivetrain setpoint into individual module setpoints
     final SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     // Makes sure each wheel isn't asked to go above its max. Recalcs the states if needed
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, SWERVE_CONSTANTS.getMaxLinearSpeed());
     Logger.recordOutput("SwerveStates/Setpoints", states);
 
     Logger.recordOutput("Swerve/Target Speeds", speeds);
@@ -408,7 +404,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Drive closed-loop at field relative speeds (i.e. for autoaim)
+   * Drive open-loop at robot relative speeds (i.e. for autoaim)
    *
    * @param speeds
    * @return a Command driving to the target speeds
@@ -456,8 +452,44 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command stopForTime(DoubleSupplier seconds) {
     return stop().repeatedly().withTimeout(seconds.getAsDouble());
   }
+  //   @AutoLogOutput(key = "Swerve/Near Trench")
+  //   public boolean isNearTrench() {
+  //     double x = getPose().getX();
+  //     double y = getPose().getY();
 
+  //     boolean inXTol =
+  //         MathUtil.isNear(TrenchPoses.BLUE_RIGHT.getPose().getX(), x, 2)
+  //             || MathUtil.isNear(TrenchPoses.RED_RIGHT.getPose().getX(), x, 2);
+  //     boolean inYTol =
+  //         MathUtil.isNear(TrenchPoses.BLUE_RIGHT.getPose().getY(), y, 0.515)
+  //             || MathUtil.isNear(TrenchPoses.RED_RIGHT.getPose().getY(), y, 0.515);
+  //     return inXTol && inYTol;
+  //   }
 
+  //   @AutoLogOutput(key = "Swerve/Near Trench for hood")
+  //   public boolean isNearTrenchForHood() {
+  //     double x = getPose().getX();
+  //     double y = getPose().getY();
+
+  //     boolean inXTol =
+  //         MathUtil.isNear(TrenchPoses.BLUE_RIGHT.getPose().getX(), x, 1)
+  //             || MathUtil.isNear(TrenchPoses.RED_RIGHT.getPose().getX(), x, 1);
+  //     boolean inYTol =
+  //         MathUtil.isNear(TrenchPoses.BLUE_RIGHT.getPose().getY(), y, 0.515)
+  //             || MathUtil.isNear(TrenchPoses.RED_RIGHT.getPose().getY(), y, 0.515);
+  //     return inXTol && inYTol;
+  //   }
+
+  //   public boolean isNearBump() {
+  //     double x = getPose().getX();
+  //     double y = getPose().getY();
+  //     return (((Math.abs(x - FieldUtils.BLUE_BUMP_RIGHT_POS.getX()) < 2)
+  //             || (Math.abs(x - FieldUtils.RED_BUMP_RIGHT_POS.getX()) < 2))
+  //         && ((y > (FieldUtils.BLUE_BUMP_LEFT_POS.getY() - 0.515)
+  //                 && y < (FieldUtils.BLUE_BUMP_LEFT_POS.getY() + 0.515)
+  //             || (y > (FieldUtils.RED_BUMP_RIGHT_POS.getY() - 0.515)
+  //                 && y < (FieldUtils.RED_BUMP_RIGHT_POS.getY() + 0.515)))));
+  //   }
 
   /**
    * Generates a set of samples without using the async thread. Makes lots of Objects, so be careful
@@ -489,6 +521,10 @@ public class SwerveSubsystem extends SubsystemBase {
     return new Pose3d(getPose());
   }
 
+  public void headingReset(Rotation2d newHeading) {
+    estimator.resetRotation(newHeading);
+  }
+
   /**
    * Returns the pose estimator rotation, as returned by {@link #getPose()}. between -180 and 180
    */
@@ -496,22 +532,17 @@ public class SwerveSubsystem extends SubsystemBase {
     return getPose().getRotation();
   }
 
-  public void headingReset(Rotation2d newHeading) {
-    estimator.resetRotation(newHeading);
+  public void resetPose(Pose2d newPose) {
+    estimator.resetPose(newPose);
+    if (Robot.ROBOT_MODE == RobotMode.SIM) {
+      swerveSimulation.setSimulationWorldPose(newPose);
+      swerveSimulation.setRobotSpeeds(new ChassisSpeeds());
+    }
   }
 
-//   public void resetPose(Pose2d newPose) {
-//     estimator.resetPose(newPose);
-//     if (Robot.ROBOT_MODE == RobotMode.SIM) {
-//       swerveSimulation.setSimulationWorldPose(newPose);
-//       swerveSimulation.setRobotSpeeds(new ChassisSpeeds());
-//     }
-//   }
-
-//   public void setYaw(Rotation2d newYaw) {
-//     resetPose(new Pose2d(getPose().getTranslation(), newYaw));
-//   }
-// I dont think that this is needed since we dont have autoaim?
+  public void setYaw(Rotation2d newYaw) {
+    resetPose(new Pose2d(getPose().getTranslation(), newYaw));
+  }
 
   public void setGyroYaw(Rotation2d yaw) {
     gyroIO.setYaw(yaw);
@@ -526,15 +557,6 @@ public class SwerveSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Odometry/Velocity Field Relative")
   public ChassisSpeeds getVelocityFieldRelative() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(getVelocityRobotRelative(), getRotation());
-  }
-
-  public boolean isNotMoving() {
-    return MathUtil.isNear(
-        0,
-        Math.hypot(
-            getVelocityRobotRelative().vxMetersPerSecond,
-            getVelocityRobotRelative().vyMetersPerSecond),
-        0.05);
   }
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */
@@ -580,17 +602,16 @@ public class SwerveSubsystem extends SubsystemBase {
     };
   }
 
-//   public void resetMapleSimPose() {
-//     resetPose(swerveSimulation.getSimulatedDriveTrainPose());
-//   }
-// It doesn't need to do this because it doesn't have cameras I think
+  public void resetMapleSimPose() {
+    resetPose(swerveSimulation.getSimulatedDriveTrainPose());
+  }
 
   @Override
   public void simulationPeriodic() {
     // Update maple simulation
     SimulatedArena.getInstance().simulationPeriodic();
     // Log simulated pose
-    // Logger.recordOutput("MapleSim/Pose", swerveSimulation.getSimulatedDriveTrainPose());
+    Logger.recordOutput("MapleSim/Pose", swerveSimulation.getSimulatedDriveTrainPose());
   }
 
   public Command runTurnSysid() {
