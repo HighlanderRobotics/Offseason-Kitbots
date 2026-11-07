@@ -496,6 +496,10 @@ public class SwerveSubsystem extends SubsystemBase {
     return getPose().getRotation();
   }
 
+  public void headingReset(Rotation2d newHeading) {
+    estimator.resetRotation(newHeading);
+  }
+
 //   public void resetPose(Pose2d newPose) {
 //     estimator.resetPose(newPose);
 //     if (Robot.ROBOT_MODE == RobotMode.SIM) {
