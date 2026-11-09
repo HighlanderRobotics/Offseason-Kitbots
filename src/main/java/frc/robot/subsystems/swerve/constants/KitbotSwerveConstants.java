@@ -79,23 +79,23 @@ public class KitbotSwerveConstants extends SwerveConstants {
  @Override
   public ModuleConstants getFrontLeftModuleConstants() {
     return new ModuleConstants(
-        0, "Front Left", 0, 1, 0, Rotation2d.fromRotations(-0.29).plus(Rotation2d.k180deg));
+        0, "Front Left", 0, 1, 0, Rotation2d.fromRotations(0.116943).plus(Rotation2d.k180deg));
   }
 
   @Override
   public ModuleConstants getFrontRightModuleConstants() {
-    return new ModuleConstants(1, "Front Right", 2, 3, 1, Rotation2d.fromRotations(0.012));
+    return new ModuleConstants(1, "Front Right", 2, 3, 1, Rotation2d.fromRotations(0.401367));
   }
 
   @Override
   public ModuleConstants getBackLeftModuleConstants() {
     return new ModuleConstants(
-        2, "Back Left", 4, 5, 2, Rotation2d.fromRotations(0.229).plus(Rotation2d.k180deg));
+        2, "Back Left", 4, 5, 2, Rotation2d.fromRotations(0.285645).plus(Rotation2d.k180deg));
   }
 
   @Override
   public ModuleConstants getBackRightModuleConstants() {
-    return new ModuleConstants(3, "Back Right", 6, 7, 3, Rotation2d.fromRotations(-0.205));
+    return new ModuleConstants(3, "Back Right", 6, 7, 3, Rotation2d.fromRotations(0.2568592));
   }
 
 
@@ -109,9 +109,9 @@ return 0;
   public Pigeon2Configuration getGyroConfig() {
     Pigeon2Configuration config = new Pigeon2Configuration();
     // TODO: CALIB GYRO
-    config.MountPose.MountPosePitch = 1.1281073093414307;
-    config.MountPose.MountPoseRoll = -0.039543408900499344;
-    config.MountPose.MountPoseYaw = 89.08586883544922;
+    config.MountPose.MountPosePitch = -0.2642292380332947;
+    config.MountPose.MountPoseRoll = 179.5883026123047;
+    config.MountPose.MountPoseYaw = 90.70897674560547;
     return config;
   }
 
