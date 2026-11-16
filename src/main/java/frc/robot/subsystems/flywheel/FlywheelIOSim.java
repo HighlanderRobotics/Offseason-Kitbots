@@ -1,20 +1,13 @@
 package frc.robot.subsystems.flywheel;
 
-import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.sim.TalonFXSimState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+package frc.robot.subsystems.flywheel;
 
 public class FlywheelIOSim extends FlywheelIO {
 
-  TalonFXSimState leaderTalonSimState;
-  private DCMotor flywheelMechanismMotor;
+public class FlywheelIOSim extends SubsystemBase {
+  /** Creates a new FlywheelIOSim. */
+  public FlywheelIOSim() {
+  }
 
   // sim timing instance variables
   private double lastSimTime = 0.0;

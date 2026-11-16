@@ -6,6 +6,8 @@ package frc.robot.subsystems.flywheel;
 
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -18,10 +20,10 @@ import org.littletonrobotics.junction.Logger;
 
 public class FlywheelSubsystem extends SubsystemBase {
   private FlywheelIO io;
-  private FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
+  private FlywheelIOInputsAutoLogged flywheelInputs = new FlywheelIOInputsAutoLogged();
   /** Creates a new FlywheelSubsystem. */
   public FlywheelSubsystem(CANBus canBus) {
-    io = Robot.isReal() ? new FlywheelIO(canBus) : new FlywheelIOSim(canBus);
+    io = new FlywheelIO(canBus);
   }
 
   public Command runAtVelocity(DoubleSupplier velocity) {
@@ -38,10 +40,8 @@ public class FlywheelSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    io.updateInputs(inputs);
-    Logger.processInputs("Flywheel", inputs);
-
-    Logger.recordOutput("Flywheel Velocity", io.getSetpointRotPerSecond());
+    io.updateInputs(flywheelInputs);
+    Logger.processInputs("Flywheel", flywheelInputs);
   }
 
   public static TalonFXConfiguration getFlywheelConfig() {

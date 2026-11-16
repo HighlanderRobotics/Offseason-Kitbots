@@ -1,0 +1,19 @@
+Front left module constants - 0
+Front left drive motor - 0
+Front left turning motor - 1
+Front left encoder CAN ID - 0
+
+Front right module constants - 1
+Front right drive motor - 2
+Front right turning motor - 3
+Front right encoder CAN ID - 1
+
+Back left module constants - 2
+Back left drive motor - 4
+Back left turning motor - 5
+Back left encoder CAN ID - 2
+
+Back right module constants - 3
+Back right drive motor - 6
+Back right turning motor - 7
+Back right encoder CAN ID - 3
