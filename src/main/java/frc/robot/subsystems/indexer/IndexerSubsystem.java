@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -51,10 +50,7 @@ public class IndexerSubsystem extends SubsystemBase {
   public IndexerSubsystem(CANBus canbus) {
     this.io = Robot.isReal() ? new IndexerIO(INDEXER_MOTOR_ID, canbus) : new IndexerIOSim(INDEXER_MOTOR_ID, canbus);
   }
-  // I don't know if I need this lol
-  private void setVoltage(double voltage) {
-    io.setVoltage(voltage);
-  }
+
   public Command setVoltageCommand(DoubleSupplier voltage) {
       return this.run(() -> io.setVoltage(voltage.getAsDouble()));
   }
