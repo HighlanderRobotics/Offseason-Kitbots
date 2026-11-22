@@ -17,11 +17,21 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class IndexerIO extends SubsystemBase {
+public class IndexerIO {
   /** Creates a new IndexerIO. */
 
+  @AutoLog 
+  public static class IndexerIOInputs {
+    public double indexerAngularVelocityRotationsPerSec = 0.0;
+    public double indexerPositionRotations = 0.0;
+    public double indexerStatorCurrentAmp = 0.0;
+    public double indexerSupplyCurrentAmp = 0.0;
+    public double indexerVoltage = 0.0;
+    public double indexerTempC = 0.0;
+    public boolean indexerConnected = false;
+
+  }
 
   public IndexerIO(int INDEXER_MOTOR_ID, CANBus canbus) {
       indexerMotor = new TalonFX(INDEXER_MOTOR_ID,canbus);
@@ -40,17 +50,7 @@ public class IndexerIO extends SubsystemBase {
       indexerMotor.optimizeBusUtilization();
       
   }
-  @AutoLog 
-  public static class IndexerIOInputs {
-    public double indexerAngularVelocityRotationsPerSec = 0.0;
-    public double indexerPositionRotations = 0.0;
-    public double indexerStatorCurrentAmp = 0.0;
-    public double indexerSupplyCurrentAmp = 0.0;
-    public double indexerVoltage = 0.0;
-    public double indexerTempC = 0.0;
-    public boolean indexerConnected = false;
 
-  }
 
   //TODO: Add gear ratios
 
