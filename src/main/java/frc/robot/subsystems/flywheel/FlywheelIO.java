@@ -9,9 +9,11 @@ import org.littletonrobotics.junction.AutoLog;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.units.measure.*; // im lazy
 import static edu.wpi.first.units.Units.*; // still lazy
@@ -42,6 +44,7 @@ public class FlywheelIO {
   }
 
   protected final TalonFX leader;
+  protected final TalonFX follower;
 
   private StatusSignal<AngularVelocity> velocity;
   private StatusSignal<Voltage> voltage;
@@ -57,6 +60,7 @@ public class FlywheelIO {
 
   public FlywheelIO(CANBus canBus) {
     leader = new TalonFX(0, canBus); // todo: get actual device id
+    follower = new TalonFX(1, canBus); // todo: get actual device id
     leader.getConfigurator().apply(FlywheelSubsystem.getFlywheelConfig());
     velocity = leader.getVelocity();
     voltage = leader.getMotorVoltage();
@@ -67,6 +71,9 @@ public class FlywheelIO {
 
     BaseStatusSignal.setUpdateFrequencyForAll(50.0, velocity, voltage, statorCurrent, supplyCurrent, temp, flywheelPosition);
     leader.optimizeBusUtilization();
+
+    follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed));
+
   }
 
   public void updateInputs(FlywheelIOInputs inputs) {
